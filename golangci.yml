@@ -1,0 +1,17 @@
+linters:
+  enable:
+    - sqlclosecheck
+    - unconvert
+    - stylecheck
+    - maligned
+    - lll
+    - ifshort
+    - goimports
+    - unparam
+
+  disable:
+    - errcheck
+
+linters-settings:
+  lll:
+    line-length: 110
