@@ -11,6 +11,7 @@ type configuration struct {
 	_             struct{}
 	SigningSecret string
 	BotToken      string
+	AppID         string
 	IsProduction  bool
 }
 
@@ -33,6 +34,7 @@ func NewConfiguration() *configuration {
 
 	signingSecret := os.Getenv("SLACK_SIGNING_SECRET")
 	slackBotToken := os.Getenv("SLACK_BOT_TOKEN")
+	appID := os.Getenv("APP_ID")
 	isProduction := os.Getenv("BOT_MODE") == "production"
 
 	if signingSecret == "" || slackBotToken == "" {
@@ -42,6 +44,7 @@ func NewConfiguration() *configuration {
 	return &configuration{
 		SigningSecret: signingSecret,
 		BotToken:      slackBotToken,
+		AppID:         appID,
 		IsProduction:  isProduction,
 	}
 }
