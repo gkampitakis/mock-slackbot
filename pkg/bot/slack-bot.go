@@ -22,7 +22,6 @@ func (bot *Bot) registerRoutes() {
 }
 
 func (bot *Bot) Run() error {
-	// FIXME: add some message here :thinking:
 	return bot.api.Run()
 }
 

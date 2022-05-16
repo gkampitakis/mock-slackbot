@@ -1,0 +1,32 @@
+display_information:
+  name: mock-bot
+  background_color: "#696059"
+features:
+  app_home:
+    home_tab_enabled: false
+    messages_tab_enabled: true
+    messages_tab_read_only_enabled: true
+  bot_user:
+    display_name: mock-bot
+    always_online: true
+oauth_config:
+  scopes:
+    bot:
+      - app_mentions:read
+      - channels:history
+      - channels:read
+      - chat:write
+      - groups:read
+      - im:read
+      - mpim:read
+      - reactions:read
+      - users:read
+settings:
+  event_subscriptions:
+    request_url: https://2016-2a02-6b66-6438-0-fb60-ade3-7379-8980.eu.ngrok.io/events-endpoint
+    bot_events:
+      - app_mention
+      - reaction_added
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false

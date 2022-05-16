@@ -3,6 +3,7 @@ package bot
 import (
 	"log"
 
+	"github.com/gkampitakis/mock-slackbot/pkg/mock"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -33,6 +34,7 @@ func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAdde
 	user, err := slackClient.GetUserInfo(event.ItemUser)
 	if err != nil {
 		log.Println("[warning]: can't get user info", err)
+		return
 	}
 	if user.IsBot {
 		return
@@ -54,8 +56,14 @@ func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAdde
 	message := res.Messages[0].Msg.Text
 	_, _, err = slackClient.PostMessage(
 		event.Item.Channel,
-		slack.MsgOptionText(message, false),
-		slack.MsgOptionTS(event.Item.Timestamp),
+		slack.MsgOptionBlocks(
+			slack.NewSectionBlock(
+				slack.NewTextBlockObject("mrkdwn", mock.Mockerize(message), false, true),
+				nil,
+				nil,
+			),
+		),
+		slack.MsgOptionTS(event.Item.Timestamp), // For sending to a thread
 	)
 	if err != nil {
 		log.Println("[error]: can't post message", err)
