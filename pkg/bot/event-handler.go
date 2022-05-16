@@ -3,6 +3,7 @@ package bot
 import (
 	"log"
 
+	"github.com/gkampitakis/mock-slackbot/pkg/cache"
 	"github.com/gkampitakis/mock-slackbot/pkg/mock"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
@@ -31,17 +32,13 @@ func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAdde
 		return
 	}
 
-	user, err := slackClient.GetUserInfo(event.ItemUser)
-	if err != nil {
-		log.Println("[warning]: can't get user info", err)
-		return
-	}
-	if user.IsBot {
+	channelID := event.Item.Channel
+	ts := event.Item.Timestamp
+
+	if cache.IsUserBot(slackClient, event.ItemUser) {
 		return
 	}
 
-	channelID := event.Item.Channel
-	ts := event.Item.Timestamp
 	res, err := slackClient.GetConversationHistory(&slack.GetConversationHistoryParameters{
 		ChannelID: channelID,
 		Inclusive: true,
@@ -53,12 +50,17 @@ func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAdde
 		return
 	}
 
-	message := res.Messages[0].Msg.Text
+	// The second check is to verify I am answering the message that the emoji was clicked on
+	if alreadyAnswered(res.Messages[0]) || ts != res.Messages[0].Timestamp {
+		return
+	}
+
+	innerText := res.Messages[0].Msg.Text
 	_, _, err = slackClient.PostMessage(
 		event.Item.Channel,
 		slack.MsgOptionBlocks(
 			slack.NewSectionBlock(
-				slack.NewTextBlockObject("mrkdwn", mock.Mockerize(message), false, true),
+				slack.NewTextBlockObject("mrkdwn", mock.Mockerize(innerText), false, true),
 				nil,
 				nil,
 			),
@@ -69,4 +71,8 @@ func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAdde
 		log.Println("[error]: can't post message", err)
 		return
 	}
+}
+
+func alreadyAnswered(msg slack.Message) bool {
+	return msg.ThreadTimestamp != ""
 }
