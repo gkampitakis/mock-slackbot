@@ -1,4 +1,4 @@
-APP_NAME = slack-bot
+APP_NAME = mock-slackbot
 BUILD_DIR = ${PWD}/build
 EXECUTABLES = nodemon golangci-lint
 K := $(foreach exec,$(EXECUTABLES),\
@@ -10,7 +10,7 @@ run: build
 dev:
 	nodemon --exec go run *.go --signal SIGTERM
 
-depencies:
+dependencies:
 	go mod download
 
 clean:

@@ -3,7 +3,6 @@ package bot
 import (
 	"log"
 
-	"github.com/gkampitakis/mock-slackbot/pkg/cache"
 	"github.com/gkampitakis/mock-slackbot/pkg/mock"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
@@ -26,7 +25,6 @@ func appMentionEvent(slackClient *slack.Client, event *slackevents.AppMentionEve
 	log.Println(event)
 }
 
-// https://api.slack.com/events/reaction_added
 func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAddedEvent) {
 	if event.Reaction != "mock" {
 		return
@@ -35,9 +33,10 @@ func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAdde
 	channelID := event.Item.Channel
 	ts := event.Item.Timestamp
 
-	if cache.IsUserBot(slackClient, event.ItemUser) {
-		return
-	}
+	// Not needed
+	// if cache.IsUserBot(slackClient, event.ItemUser) {
+	// 	return
+	// }
 
 	res, err := slackClient.GetConversationHistory(&slack.GetConversationHistoryParameters{
 		ChannelID: channelID,

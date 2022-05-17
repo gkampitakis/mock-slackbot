@@ -61,6 +61,12 @@ func eventsEndpointHandler(eventChanel chan<- slackevents.EventsAPIInnerEvent) f
 		if len(eventChanel) == cap(eventChanel) {
 			log.Println("[warning]: eventChannel is full! Blocking")
 		}
+
+		/**
+			De-couple your ingestion of events from processing and reacting to them.
+			Especially when working with large workspaces, many workspaces, or subscribing to a large number of events.
+			Quickly respond to events with HTTP 200 and add them to a queue before doing amazing things with them.
+		**/
 		eventChanel <- slackEvent.InnerEvent
 
 		ctx.Writer.WriteHeader(200)

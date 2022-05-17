@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-var tagsRegex = regexp.MustCompile("(?i)<[!|@][\\d\\w]+>")
+var tagsRegex = regexp.MustCompile(`(?i)<[!|@][\d\w]+>`)
 
 func Mockerize(message string) string {
 	letters := strings.Split(escapeTags(message), "")

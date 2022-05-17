@@ -56,10 +56,9 @@ func (bot *Bot) eventLoop() {
 }
 
 func (bot *Bot) gracefulShutdown() {
-	c := make(chan os.Signal)
+	c := make(chan os.Signal, 1)
 	signal.Notify(
 		c,
-		syscall.SIGKILL,
 		syscall.SIGINT,
 		syscall.SIGTERM,
 	)
@@ -92,12 +91,12 @@ func NewBot() *Bot {
 	}
 
 	bot.registerRoutes()
-	bot.gracefulShutdown()
 
 	// Running on it's own go routine
 	go bot.eventLoop()
 
 	if config.IsProduction {
+		bot.gracefulShutdown()
 		gin.SetMode(gin.ReleaseMode)
 	}
 
