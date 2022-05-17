@@ -5,15 +5,30 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"runtime"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
 
+var uptime = time.Now()
+
 func healthcheckHandler(ctx *gin.Context) {
+	var mem runtime.MemStats
+	runtime.ReadMemStats(&mem)
+
 	ctx.JSON(200, gin.H{
-		"message": "Healthy Status",
+		"service":     "mock-bot",
+		"uptime":      time.Since(uptime).String(),
+		"go-routines": runtime.NumGoroutine(),
+		"memory": map[string]interface{}{
+			"rss":                mem.HeapSys,
+			"total-alloc":        mem.TotalAlloc,
+			"heap-alloc":         mem.HeapAlloc,
+			"heap-objects-count": mem.HeapObjects,
+		},
 	})
 }
 
