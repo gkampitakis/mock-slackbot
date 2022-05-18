@@ -22,7 +22,27 @@ func registerHandler(slackClient *slack.Client) func(slackevents.EventsAPIInnerE
 }
 
 func appMentionEvent(slackClient *slack.Client, event *slackevents.AppMentionEvent) {
-	log.Println(event)
+	messageRef := slack.ItemRef{
+		Timestamp: event.TimeStamp,
+		Channel:   event.Channel,
+	}
+
+	err := slackClient.AddReaction("eyes", messageRef)
+	if err != nil {
+		log.Println(err)
+	}
+
+	mockMsg := mock.Mockerize(event.Text)
+	err = postMessage(
+		slackClient,
+		mockMsg,
+		event.Channel,
+		event.TimeStamp,
+		event.ThreadTimeStamp != "",
+	)
+	if err != nil {
+		log.Println("[error]: can't post message", err)
+	}
 }
 
 func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAddedEvent) {
@@ -32,11 +52,6 @@ func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAdde
 
 	channelID := event.Item.Channel
 	ts := event.Item.Timestamp
-
-	// Not needed
-	// if cache.IsUserBot(slackClient, event.ItemUser) {
-	// 	return
-	// }
 
 	res, err := slackClient.GetConversationHistory(&slack.GetConversationHistoryParameters{
 		ChannelID: channelID,
@@ -54,17 +69,13 @@ func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAdde
 		return
 	}
 
-	innerText := res.Messages[0].Msg.Text
-	_, _, err = slackClient.PostMessage(
-		event.Item.Channel,
-		slack.MsgOptionBlocks(
-			slack.NewSectionBlock(
-				slack.NewTextBlockObject("mrkdwn", mock.Mockerize(innerText), false, true),
-				nil,
-				nil,
-			),
-		),
-		slack.MsgOptionTS(event.Item.Timestamp), // For sending to a thread
+	err = postMessage(
+		slackClient,
+		// TODO: we can add image here as well ?
+		res.Messages[0].Msg.Text,
+		channelID,
+		ts,
+		true,
 	)
 	if err != nil {
 		log.Println("[error]: can't post message", err)

@@ -52,6 +52,7 @@ more information.
 | conversations.history | channels:history, groups:history, im:history, mpim:history |
 | chat.postMessage 	    | chat:write                                  |
 | users.info  	        | chat:write, chat:write:user, chat:write:bot |
+| reactions.add  	      | reactions:write                             |
 
 ### Still to do
 
