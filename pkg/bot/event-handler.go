@@ -2,11 +2,16 @@ package bot
 
 import (
 	"log"
+	"strings"
 
 	"github.com/gkampitakis/mock-slackbot/pkg/mock"
 	"github.com/gkampitakis/mock-slackbot/pkg/utils"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
+)
+
+const (
+	MUTE_MEME = "https://imgflip.com/i/6gn6ir"
 )
 
 var users = map[string]struct{}{}
@@ -38,6 +43,19 @@ func appMentionEvent(slackClient *slack.Client, event *slackevents.AppMentionEve
 	msg := utils.EscapeSlackTags(event.Text)
 	if msg == "" {
 		log.Println("[warning]: not txt message")
+		return
+	}
+
+	if _, exists := users[event.User]; isMuteCommand(msg) && !exists {
+		linkMessage(
+			slackClient,
+			MUTE_MEME,
+			event.Channel,
+			event.TimeStamp,
+			event.ThreadTimeStamp != "",
+		)
+
+		users[event.User] = struct{}{}
 		return
 	}
 
@@ -89,15 +107,23 @@ func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAdde
 		true,
 	)
 
-	_, exists := users[event.ItemUser]
-	if exists {
+	if _, exists := users[event.ItemUser]; exists {
 		return
 	}
-	users[event.ItemUser] = struct{}{}
 
 	muteMessage(slackClient, channelID, event.ItemUser, ts)
 }
 
 func alreadyAnswered(msg slack.Message) bool {
 	return msg.ThreadTimestamp != ""
+}
+
+func isMuteCommand(msg string) bool {
+	words := strings.Fields(msg)
+
+	if len(words) == 1 && words[0] == "mute" {
+		return true
+	}
+
+	return false
 }
