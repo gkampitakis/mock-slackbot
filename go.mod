@@ -3,7 +3,6 @@ module github.com/gkampitakis/mock-slackbot
 go 1.18
 
 require (
-	github.com/Code-Hex/go-generics-cache v1.0.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/joho/godotenv v1.4.0
 	github.com/slack-go/slack v0.10.3

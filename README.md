@@ -51,13 +51,16 @@ more information.
 |    :-:	              |  ---	  |
 | conversations.history | channels:history, groups:history, im:history, mpim:history |
 | chat.postMessage 	    | chat:write                                  |
-| users.info  	        | chat:write, chat:write:user, chat:write:bot |
 | reactions.add  	      | reactions:write                             |
+
+### Meme API
+
+For meme generation the slack bot is using [ImgFlip](https://imgflip.com/). You
+will need to sign up and set `MEME_API_USERNAME`, `MEME_API_PASSWORD` for using the
+[ImgFlip API](https://imgflip.com/api). 
 
 ### Still to do
 
 - [ ] Unit tests
 - [ ] Allow bot to join to all public channels
 - [ ] Auto join to channels that bot has been removed or newly created ones
-- [ ] Mute functionality
-- [ ] Respond to mentions
