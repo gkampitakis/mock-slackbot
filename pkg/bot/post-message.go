@@ -1,7 +1,8 @@
 package bot
 
 import (
-	"github.com/gkampitakis/mock-slackbot/pkg/mock"
+	"log"
+
 	"github.com/slack-go/slack"
 )
 
@@ -9,11 +10,11 @@ func postMessage(
 	slackClient *slack.Client,
 	msg, channelID, ts string,
 	replyToThread bool,
-) error {
+) {
 	options := []slack.MsgOption{
 		slack.MsgOptionBlocks(
 			slack.NewSectionBlock(
-				slack.NewTextBlockObject("mrkdwn", mock.Mockerize(msg), false, true),
+				slack.NewTextBlockObject("mrkdwn", msg, false, true),
 				nil,
 				nil,
 			),
@@ -28,6 +29,7 @@ func postMessage(
 		channelID,
 		options...,
 	)
-
-	return err
+	if err != nil {
+		log.Println("[error]: can't post message", err)
+	}
 }

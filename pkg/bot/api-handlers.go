@@ -102,6 +102,7 @@ func slackChallenge(ctx *gin.Context, body []byte) {
 		return
 	}
 
+	log.Println("server verified")
 	ctx.Data(200, "Text", []byte(r.Challenge))
 }
 

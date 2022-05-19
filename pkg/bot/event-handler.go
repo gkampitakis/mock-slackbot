@@ -4,9 +4,12 @@ import (
 	"log"
 
 	"github.com/gkampitakis/mock-slackbot/pkg/mock"
+	"github.com/gkampitakis/mock-slackbot/pkg/utils"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
+
+var users = map[string]struct{}{}
 
 func registerHandler(slackClient *slack.Client) func(slackevents.EventsAPIInnerEvent) {
 	return func(innerEvent slackevents.EventsAPIInnerEvent) {
@@ -32,17 +35,19 @@ func appMentionEvent(slackClient *slack.Client, event *slackevents.AppMentionEve
 		log.Println(err)
 	}
 
-	mockMsg := mock.Mockerize(event.Text)
-	err = postMessage(
+	msg := utils.EscapeSlackTags(event.Text)
+	if msg == "" {
+		log.Println("[warning]: not txt message")
+		return
+	}
+
+	postMessage(
 		slackClient,
-		mockMsg,
+		mock.Mockerize(msg),
 		event.Channel,
 		event.TimeStamp,
 		event.ThreadTimeStamp != "",
 	)
-	if err != nil {
-		log.Println("[error]: can't post message", err)
-	}
 }
 
 func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAddedEvent) {
@@ -69,18 +74,28 @@ func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAdde
 		return
 	}
 
-	err = postMessage(
+	msg := utils.EscapeSlackTags(res.Messages[0].Msg.Text)
+	if msg == "" {
+		log.Println("[warning]: not txt message")
+		return
+	}
+
+	postMessage(
 		slackClient,
 		// TODO: we can add image here as well ?
-		res.Messages[0].Msg.Text,
+		mock.Mockerize(msg),
 		channelID,
 		ts,
 		true,
 	)
-	if err != nil {
-		log.Println("[error]: can't post message", err)
+
+	_, exists := users[event.ItemUser]
+	if exists {
 		return
 	}
+	users[event.ItemUser] = struct{}{}
+
+	muteMessage(slackClient, channelID, event.ItemUser, ts)
 }
 
 func alreadyAnswered(msg slack.Message) bool {

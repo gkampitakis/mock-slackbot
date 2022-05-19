@@ -2,14 +2,11 @@ package mock
 
 import (
 	"math/rand"
-	"regexp"
 	"strings"
 )
 
-var tagsRegex = regexp.MustCompile(`(?i)<[!|@][\d\w]+>`)
-
 func Mockerize(message string) string {
-	letters := strings.Split(escapeTags(message), "")
+	letters := strings.Split(message, "")
 	mockMsg := ""
 
 	for _, letter := range letters {
@@ -18,10 +15,6 @@ func Mockerize(message string) string {
 	}
 
 	return mockMsg
-}
-
-func escapeTags(message string) string {
-	return tagsRegex.ReplaceAllLiteralString(message, "")
 }
 
 func changeCase(letter string, capital bool) string {
