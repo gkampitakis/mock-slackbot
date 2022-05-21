@@ -9,13 +9,13 @@ import (
 )
 
 const (
-	MEME_API_URL     = "https://api.imgflip.com/caption_image"
-	MEME_TEMPLATE_ID = "102723630" // Bob Squarepants mock meme
+	MemeAPIUrl     = "https://api.imgflip.com/caption_image"
+	MemeTemplateID = "102723630" // Bob Squarepants mock meme
 )
 
 var (
-	MEME_API_USERNAME = os.Getenv("MEME_API_USERNAME")
-	MEME_API_PASSWORD = os.Getenv("MEME_API_PASSWORD")
+	MemeAPIUsername = os.Getenv("MEME_API_USERNAME")
+	MemeAPIPassword = os.Getenv("MEME_API_PASSWORD")
 )
 
 type memeResponseObject struct {
@@ -25,10 +25,10 @@ type memeResponseObject struct {
 }
 
 func CreateMeme(msg string) (string, error) {
-	response, err := http.PostForm(MEME_API_URL, url.Values{
-		"template_id":    {MEME_TEMPLATE_ID},
-		"username":       {MEME_API_USERNAME},
-		"password":       {MEME_API_PASSWORD},
+	response, err := http.PostForm(MemeAPIUrl, url.Values{
+		"template_id":    {MemeTemplateID},
+		"username":       {MemeAPIUsername},
+		"password":       {MemeAPIPassword},
 		"boxes[0][text]": {msg},
 	})
 	if err != nil {

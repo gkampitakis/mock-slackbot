@@ -15,7 +15,12 @@ func muteMessage(
 		userID,
 		slack.MsgOptionBlocks(
 			slack.NewSectionBlock(
-				slack.NewTextBlockObject("mrkdwn", "> You can mute me by running @mock-bot mute", false, true),
+				slack.NewTextBlockObject(
+					"mrkdwn",
+					"> You can mute me by running @mock-bot mute",
+					false,
+					true,
+				),
 				nil,
 				nil,
 			),

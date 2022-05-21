@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	MUTE_MEME = "https://imgflip.com/i/6gn6ir"
+	MuteMeme = "https://imgflip.com/i/6gn6ir"
 )
 
 var users = map[string]struct{}{}
@@ -49,7 +49,7 @@ func appMentionEvent(slackClient *slack.Client, event *slackevents.AppMentionEve
 	if _, exists := users[event.User]; isMuteCommand(msg) && !exists {
 		linkMessage(
 			slackClient,
-			MUTE_MEME,
+			MuteMeme,
 			event.Channel,
 			event.TimeStamp,
 			event.ThreadTimeStamp != "",

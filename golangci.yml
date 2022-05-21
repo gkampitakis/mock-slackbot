@@ -1,16 +1,11 @@
 linters:
-  enable:
-    - sqlclosecheck
+  enable
     - unconvert
     - stylecheck
-    - maligned
     - lll
     - ifshort
     - goimports
     - unparam
-
-  disable:
-    - errcheck
 
 linters-settings:
   lll:

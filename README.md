@@ -49,9 +49,11 @@ more information.
 
 |  Request 	            | Scope  	|
 |    :-:	              |  ---	  |
-| conversations.history | channels:history, groups:history, im:history, mpim:history |
-| chat.postMessage 	    | chat:write                                  |
-| reactions.add  	      | reactions:write                             |
+| conversations.history | channels:history, groups:history, im:history, mpim:history  |
+| chat.postMessage 	    | chat:write                                                  |
+| reactions.add  	      | reactions:write                                             |
+| conversations.list  	| channels:read, groups:read, im:read, mpim:read              |
+| conversations.join  	| channels:join                                               |
 
 ### Meme API
 
@@ -62,5 +64,4 @@ will need to sign up and set `MEME_API_USERNAME`, `MEME_API_PASSWORD` for using 
 ### Still to do
 
 - [ ] Unit tests
-- [ ] Allow bot to join to all public channels
 - [ ] Auto join to channels that bot has been removed or newly created ones
