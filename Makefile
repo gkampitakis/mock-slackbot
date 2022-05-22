@@ -12,6 +12,7 @@ dev:
 
 dependencies:
 	go mod download
+	go install github.com/mfridman/tparse@latest
 
 clean:
 	rm -rf ./build
@@ -24,3 +25,10 @@ lint:
 
 format:
 	golines -w .
+
+test: 
+	go test ./... -cover -v -count=1 -json | tparse -all
+
+test-cov:
+	go test ./... -count=1 -coverprofile=coverage.out && \
+	go tool cover -html=coverage.out
