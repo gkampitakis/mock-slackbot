@@ -1,0 +1,18 @@
+
+[TestConfiguration/should_init_config - 1]
+&utils.configuration{
+    _:             struct {}{},
+    SigningSecret: "mock-secret",
+    BotToken:      "mock-token",
+    IsProduction:  false,
+}
+---
+
+[TestConfiguration/should_set_production_'true' - 1]
+&utils.configuration{
+    _:             struct {}{},
+    SigningSecret: "mock-secret",
+    BotToken:      "mock-token",
+    IsProduction:  true,
+}
+---

@@ -14,18 +14,20 @@ type configuration struct {
 	IsProduction  bool
 }
 
+var logFatalln = log.Fatalln
+
 func init() {
 	if os.Getenv("BOT_MODE") == "production" {
 		return
 	}
 
 	if err := godotenv.Load(".env"); err != nil {
-		log.Printf("[configuration-init]-[error]: %s\n", err)
+		log.Printf("[error]: %s\n", err)
 
 		return
 	}
 
-	log.Println("[configuration-init]: Loaded")
+	log.Println("[info]: config loaded")
 }
 
 func NewConfiguration() *configuration {
@@ -36,7 +38,7 @@ func NewConfiguration() *configuration {
 	isProduction := os.Getenv("BOT_MODE") == "production"
 
 	if signingSecret == "" || slackBotToken == "" {
-		log.Fatalln("[configuration]: SLACK_SIGNING_SECRET, SLACK_BOT_TOKEN are required env vars")
+		logFatalln("[error]: SLACK_SIGNING_SECRET, SLACK_BOT_TOKEN are required env vars")
 	}
 
 	return &configuration{
