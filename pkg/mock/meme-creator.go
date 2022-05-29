@@ -2,6 +2,7 @@ package mock
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -24,8 +25,12 @@ type memeResponseObject struct {
 	ErrorMessage string            `json:"error_message"`
 }
 
-func CreateMeme(msg string) (string, error) {
-	response, err := http.PostForm(MemeAPIUrl, url.Values{
+type httpClient interface {
+	PostForm(string, url.Values) (*http.Response, error)
+}
+
+func CreateMockMeme(client httpClient, msg string) (string, error) {
+	response, err := client.PostForm(MemeAPIUrl, url.Values{
 		"template_id":    {MemeTemplateID},
 		"username":       {MemeAPIUsername},
 		"password":       {MemeAPIPassword},
@@ -43,8 +48,11 @@ func CreateMeme(msg string) (string, error) {
 
 	var jsonBody memeResponseObject
 	err = json.Unmarshal(body, &jsonBody)
-	if err != nil || jsonBody.ErrorMessage != "" {
+	if err != nil {
 		return "", err
+	}
+	if jsonBody.ErrorMessage != "" {
+		return "", errors.New(jsonBody.ErrorMessage)
 	}
 
 	return jsonBody.Data["url"], nil

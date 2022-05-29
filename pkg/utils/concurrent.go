@@ -4,7 +4,7 @@ import (
 	"sync"
 )
 
-func Concurrent[T any](array []T, format func(T), maxRequests int) {
+func Concurrent[T any](array []T, execute func(T), maxRequests int) {
 	if maxRequests < 1 {
 		panic("Deadlock can't process items")
 	}
@@ -17,7 +17,7 @@ func Concurrent[T any](array []T, format func(T), maxRequests int) {
 
 		go func(i int, item T) {
 			defer wg.Done()
-			format(item)
+			execute(item)
 
 			<-maxConcurrency
 		}(index, item)
