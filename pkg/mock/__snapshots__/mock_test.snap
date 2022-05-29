@@ -1,0 +1,30 @@
+
+[TestCreateMockMeme/should_call_postFrom_with_correct_values - 1]
+https://api.imgflip.com/caption_image
+url.Values{
+    "boxes[0][text]": {"mock-message"},
+    "password":       {""},
+    "template_id":    {"102723630"},
+    "username":       {""},
+}
+---
+
+[TestCreateMockMeme/should_return_PostForm_error - 1]
+https://api.imgflip.com/caption_image
+url.Values{
+    "boxes[0][text]": {"mock-message"},
+    "password":       {""},
+    "template_id":    {"102723630"},
+    "username":       {""},
+}
+---
+
+[TestCreateMockMeme/should_return_error_from_api - 1]
+https://api.imgflip.com/caption_image
+url.Values{
+    "boxes[0][text]": {"mock-message"},
+    "password":       {""},
+    "template_id":    {"102723630"},
+    "username":       {""},
+}
+---
