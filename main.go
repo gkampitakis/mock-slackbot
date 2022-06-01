@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/gkampitakis/mock-slackbot/pkg/bot"
+	"github.com/gkampitakis/mock-slackbot/bot"
 )
 
 func main() {

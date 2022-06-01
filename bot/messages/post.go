@@ -1,4 +1,4 @@
-package bot
+package messages
 
 import (
 	"log"
@@ -6,13 +6,19 @@ import (
 	"github.com/slack-go/slack"
 )
 
-func linkMessage(
+func Post(
 	slackClient *slack.Client,
-	link, channelID, ts string,
+	msg, channelID, ts string,
 	replyToThread bool,
 ) {
 	options := []slack.MsgOption{
-		slack.MsgOptionText(link, false),
+		slack.MsgOptionBlocks(
+			slack.NewSectionBlock(
+				slack.NewTextBlockObject("mrkdwn", msg, false, true),
+				nil,
+				nil,
+			),
+		),
 	}
 
 	if replyToThread {
@@ -24,6 +30,6 @@ func linkMessage(
 		options...,
 	)
 	if err != nil {
-		log.Println("[error]: can't post link message", err)
+		log.Println("[error]: can't post message", err)
 	}
 }

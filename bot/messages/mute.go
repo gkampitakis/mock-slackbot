@@ -1,4 +1,4 @@
-package bot
+package messages
 
 import (
 	"log"
@@ -6,7 +6,7 @@ import (
 	"github.com/slack-go/slack"
 )
 
-func muteMessage(
+func Mute(
 	slackClient *slack.Client,
 	channelID, userID, ts string,
 ) {
