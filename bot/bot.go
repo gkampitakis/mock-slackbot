@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gkampitakis/mock-slackbot/pkg/utils"
+	"github.com/gkampitakis/mock-slackbot/utils"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -48,7 +48,6 @@ func NewBot() *Bot {
 	return bot
 }
 
-// TODO: check params are not used go lint
 func (bot *Bot) init() {
 	log.Println("[info]: initializing slack-bot")
 

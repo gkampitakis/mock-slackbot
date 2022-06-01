@@ -4,8 +4,9 @@ import (
 	"log"
 	"strings"
 
-	"github.com/gkampitakis/mock-slackbot/pkg/mock"
-	"github.com/gkampitakis/mock-slackbot/pkg/utils"
+	"github.com/gkampitakis/mock-slackbot/bot/messages"
+	"github.com/gkampitakis/mock-slackbot/mock"
+	"github.com/gkampitakis/mock-slackbot/utils"
 	"github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 )
@@ -46,8 +47,8 @@ func appMentionEvent(slackClient *slack.Client, event *slackevents.AppMentionEve
 		return
 	}
 
-	if _, exists := users[event.User]; isMuteCommand(msg) && !exists {
-		linkMessage(
+	if _, exists := users[event.User]; !exists && isMuteCommand(msg) {
+		messages.Link(
 			slackClient,
 			MuteMeme,
 			event.Channel,
@@ -59,7 +60,7 @@ func appMentionEvent(slackClient *slack.Client, event *slackevents.AppMentionEve
 		return
 	}
 
-	postMessage(
+	messages.Post(
 		slackClient,
 		mock.Mockerize(msg),
 		event.Channel,
@@ -98,7 +99,7 @@ func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAdde
 		return
 	}
 
-	postMessage(
+	messages.Post(
 		slackClient,
 		// TODO: we can add image here as well ?
 		mock.Mockerize(msg),
@@ -111,7 +112,7 @@ func reactionAddEvent(slackClient *slack.Client, event *slackevents.ReactionAdde
 		return
 	}
 
-	muteMessage(slackClient, channelID, event.ItemUser, ts)
+	messages.Mute(slackClient, channelID, event.ItemUser, ts)
 }
 
 func alreadyAnswered(msg slack.Message) bool {
