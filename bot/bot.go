@@ -25,7 +25,7 @@ type Bot struct {
 	server       *http.Server
 }
 
-func NewBot() *Bot {
+func New() *Bot {
 	bot := &Bot{
 		slackClient:  slack.New(config.BotToken),
 		api:          gin.Default(),
@@ -38,7 +38,6 @@ func NewBot() *Bot {
 	go bot.eventLoop()
 
 	if config.IsProduction {
-		bot.gracefulShutdown()
 		gin.SetMode(gin.ReleaseMode)
 
 		// Running on it's own go routine
@@ -79,10 +78,9 @@ func (bot *Bot) Run() error {
 		Addr:    ":8080",
 		Handler: bot.api,
 	}
-
 	log.Println("Listening and serving HTTP on :8080")
 
-	return bot.server.ListenAndServe()
+	return bot.shutdown()
 }
 
 func (bot *Bot) eventLoop() {
@@ -99,7 +97,12 @@ func (bot *Bot) eventLoop() {
 	}
 }
 
-func (bot *Bot) gracefulShutdown() {
+func (bot *Bot) shutdown() error {
+	if !config.IsProduction {
+		return bot.server.ListenAndServe()
+	}
+
+	var err error
 	c := make(chan os.Signal, 1)
 	signal.Notify(
 		c,
@@ -108,23 +111,24 @@ func (bot *Bot) gracefulShutdown() {
 	)
 
 	go func() {
-		<-c
-
-		time.Sleep(1 * time.Second)
-
-		for {
-			if len(bot.eventChannel) == 0 {
-				break
-			}
-
-			log.Println("draining event queue")
-			time.Sleep(1 * time.Second)
-		}
-
-		log.Println("[info]: bot shutting down")
-
-		if err := bot.server.Shutdown(context.TODO()); err != nil {
-			log.Fatalln(err)
-		}
+		err = bot.server.ListenAndServe()
 	}()
+
+	<-c
+	log.Println("[info]: bot shutting down")
+
+	if err := bot.server.Shutdown(context.TODO()); err != nil {
+		log.Println(err)
+	}
+
+	for {
+		if len(bot.eventChannel) == 0 {
+			break
+		}
+
+		log.Println("draining event queue")
+		time.Sleep(1 * time.Second)
+	}
+
+	return err
 }

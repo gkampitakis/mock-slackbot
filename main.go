@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	if err := bot.NewBot().Run(); err != nil {
+	if err := bot.New().Run(); err != nil {
 		log.Fatalln(err)
 	}
 }
