@@ -7,7 +7,7 @@ import (
 )
 
 func Post(
-	slackClient *slack.Client,
+	slackClient SlackClient,
 	msg, channelID, ts string,
 	replyToThread bool,
 ) {

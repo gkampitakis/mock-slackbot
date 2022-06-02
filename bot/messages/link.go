@@ -7,7 +7,7 @@ import (
 )
 
 func Link(
-	slackClient *slack.Client,
+	slackClient SlackClient,
 	link, channelID, ts string,
 	replyToThread bool,
 ) {

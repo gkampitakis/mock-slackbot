@@ -7,7 +7,7 @@ import (
 )
 
 func Mute(
-	slackClient *slack.Client,
+	slackClient SlackClient,
 	channelID, userID, ts string,
 ) {
 	_, err := slackClient.PostEphemeral(
@@ -27,7 +27,6 @@ func Mute(
 		),
 		slack.MsgOptionTS(ts),
 	)
-
 	if err != nil {
 		log.Println("[error]: can't post ephemeral message", err)
 	}
