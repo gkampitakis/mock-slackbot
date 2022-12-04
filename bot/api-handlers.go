@@ -2,7 +2,7 @@ package bot
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"runtime"
@@ -34,7 +34,7 @@ func healthcheckHandler(ctx *gin.Context) {
 
 func eventsEndpointHandler(eventChanel chan<- slackevents.EventsAPIInnerEvent) func(*gin.Context) {
 	return func(ctx *gin.Context) {
-		body, err := ioutil.ReadAll(ctx.Request.Body)
+		body, err := io.ReadAll(ctx.Request.Body)
 		if err != nil {
 			badRequest(ctx, err)
 			return
